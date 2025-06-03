@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "81:80"
+    volumes:
+      - ./nginx/html:/usr/share/nginx/html
+
+  coredns:
+    image: coredns/coredns:latest
+    ports:
+      - "54:53/udp"
+    volumes:
+      - ./coredns/Corefile:/Corefile
+      - ./coredns/zones:/zones
+
+  smtp:
+    image: namshi/smtp:latest
+    ports:
+      - "26:25"
+    networks:
+      - app_network
+
+  ssh:
+    image: linuxserver/openssh-server:latest
+    ports:
+      - "23:22"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Moscow
+      - USER_NAME=admin
+      - DOCKER_MODS=linuxserver/mods:openssh-server-ssh-key-only
+    volumes:
+      - ./ssh/config:/config
+      - ./ssh/authorized_keys:/config/.ssh/authorized_keys
+
+  sntp:
+    image: cturra/ntp:latest
+    ports:
+      - "124:123/udp"
+    environment:
+      - TZ=Europe/Moscow 

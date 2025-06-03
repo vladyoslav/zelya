@@ -1,0 +1,10 @@
+. {
+    forward . /etc/resolv.conf
+    cache
+}
+
+math.spbu {
+    file /zones/math.spbu.zone
+    forward . /etc/resolv.conf
+    cache
+} 
